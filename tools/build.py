@@ -26,19 +26,24 @@ h1 em{font-style:normal;color:#4F82EE}.blue h1 em{color:#0E1420}
 dashes='<div class="dash" style="top:100px;width:190px"></div><div class="dash" style="top:150px;width:110px"></div><div class="dash" style="top:200px;width:60px"></div>'
 check='<div class="dot"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l5 5L20 6"/></svg></div>'
 P={
-'post1_launch':('ink',R,'<h1>Everybody’s fast in the group chat.<br><em>See how you compare.</em></h1>','Run the drills. Log your numbers.'),
-'post2_slide1':('blue',W,'<h1>Don’t wait for a combine.</h1><p class="sub">Start building your numbers now.</p>','1 / 5 &nbsp; Swipe →'),
-'post2_slide2':('white',C,'<div class="tag">STEP 1</div><h1>Run the drills on your own.</h1><p class="sub">Your field. Your schedule.</p>','2 / 5'),
-'post2_slide3':('ink',R,'<div class="tag">STEP 2</div><h1>Log your scores.</h1><div class="field"><span>Drill score</span><div class="pill">Self-reported</div></div><p class="sub">Then track your progress over time.</p>','3 / 5'),
-'post2_slide4':('blue',W,'<div class="tag" style="color:#fff">STEP 3</div><h1>See how you compare.</h1><div class="rows"><div>Against your age group</div><div>Against other ages</div><div>Across other sports</div></div>','4 / 5'),
-'post2_slide5':('white',C,'<h1>Find out where you stand.</h1><p class="sub">Run the drills. Log your numbers. See how you compare.</p>','5 / 5'),
-'post3_parents':('white',C,'<div class="tag">FOR PARENTS</div><h1>Your athlete put in the work.</h1><p class="sub">See how they stack up against their age group and beyond.</p>','Self-reported combine stats,<br>across ages and sports.'),
+'post4_lastscore':('ink',R,'<div class="tag">PROGRESS</div><h1>Beat your <em>last</em> score.</h1><p class="sub">Log your drills. Track your progress over time.</p>','Self-reported scores.'),
+'post5_othersports':('blue',W,'<div class="tag" style="color:#fff">ANY SPORT</div><h1>How do you compare outside your sport?</h1><p class="sub">See your self-reported scores next to athletes in other sports.</p>','Your age group. Other ages.<br>Other sports.'),
+'post6_slide1':('white',C,'<div class="tag">FOR PARENTS</div><h1>What “self-reported” means.</h1><p class="sub">A quick guide to DraftDay scores.</p>','1 / 4 &nbsp; Swipe →'),
+'post6_slide2':('ink',R,'<div class="tag">ON THEIR OWN</div><h1>Your athlete runs the drills.</h1><p class="sub">Then logs the score themselves.</p>','2 / 4'),
+'post6_slide3':('blue',W,'<div class="tag" style="color:#fff">THE NUMBER</div><h1>It’s their own report.</h1><div class="rows"><div>Logged by the athlete</div><div>Not verified</div><div>Labeled self-reported</div></div>','3 / 4'),
+'post6_slide4':('white',C,'<h1>Use it to <em>track</em> and <em>compare.</em></h1><p class="sub">Progress over time, plus how they stack up by age group and sport.</p>','4 / 4'),
+'story1_newweek':('ink',R,'<h1>New week.<br><em>New numbers.</em></h1><p class="sub">Run the drills. Log your scores.</p>','Self-reported scores.',1920),
+'story2_compare':('blue',W,'<h1>Your age group. Other ages. Other sports.</h1><p class="sub">See how you compare.</p>','Self-reported scores.',1920),
+'story3_parents':('white',C,'<div class="tag">FOR PARENTS</div><h1>Watch their progress add up.</h1><p class="sub">Track self-reported drill scores over time.</p>','Self-reported scores.',1920),
 }
 async def main():
   async with async_playwright() as p:
     br=await p.chromium.launch(); pg=await br.new_page(viewport={'width':1080,'height':1350})
-    for n,(t,l,m,f) in P.items():
-      await pg.set_content(f'<!doctype html><html><head><style>{css}</style></head><body class="{t}">{dashes}<img class="logo" src="{l}"><div class="mid">{m}</div><div class="foot"><div>{f}</div><div class="url">draftday.pro</div></div></body></html>')
-      await pg.evaluate('document.fonts.ready'); await pg.screenshot(path=f'out/{n}.png')
+    for n,v in P.items():
+      t,l,m,f=v[:4]; h=v[4] if len(v)>4 else 1350
+      await pg.set_viewport_size({'width':1080,'height':h})
+      st='' if h==1350 else '<style>body{height:1920px;padding:260px 84px}.foot{bottom:300px}.dash{margin-top:180px}</style>'
+      await pg.set_content(f'<!doctype html><html><head><style>{css}</style>{st}</head><body class="{t}">{dashes}<img class="logo" src="{l}"><div class="mid">{m}</div><div class="foot"><div>{f}</div><div class="url">draftday.pro</div></div></body></html>')
+      await pg.evaluate('document.fonts.ready'); await pg.screenshot(path=f'out/{n}.png',full_page=False)
     await br.close()
 asyncio.run(main())
