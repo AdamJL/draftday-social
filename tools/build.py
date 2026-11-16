@@ -35,11 +35,23 @@ P={
 'story1_newweek':('ink',R,'<h1>New week.<br><em>New numbers.</em></h1><p class="sub">Run the drills. Log your scores.</p>','Self-reported scores.',1920),
 'story2_compare':('blue',W,'<h1>Your age group. Other ages. Other sports.</h1><p class="sub">See how you compare.</p>','Self-reported scores.',1920),
 'story3_parents':('white',C,'<div class="tag">FOR PARENTS</div><h1>Watch their progress add up.</h1><p class="sub">Track self-reported drill scores over time.</p>','Self-reported scores.',1920),
+'post7_everyage':('blue',W,'<div class="tag" style="color:#fff">ANY AGE</div><h1>Every age group has a starting point.</h1><p class="sub">Log your self-reported scores and see where you stand in yours.</p>','Track progress.<br>Compare by age.'),
+'post8_slide1':('ink',R,'<div class="tag">ONE SCORE</div><h1>Three ways to <em>see it.</em></h1><p class="sub">Log a drill score once. Compare it three ways.</p>','1 / 5 &nbsp; Swipe →'),
+'post8_slide2':('white',C,'<div class="tag">WAY 1</div><h1>Against your <em>age group.</em></h1><p class="sub">See where you stand among athletes your age.</p>','2 / 5'),
+'post8_slide3':('blue',W,'<div class="tag" style="color:#fff">WAY 2</div><h1>Against other ages.</h1><p class="sub">See how your numbers look next to older and younger athletes.</p>','3 / 5'),
+'post8_slide4':('ink',R,'<div class="tag">WAY 3</div><h1>Against <em>other sports.</em></h1><p class="sub">See how you measure up outside your own sport.</p>','4 / 5'),
+'post8_slide5':('white',C,'<h1>Log yours. <em>See all three.</em></h1><p class="sub">Scores on DraftDay are self-reported by athletes.</p>','5 / 5'),
+'post9_offseason':('white',C,'<div class="tag">OFF-SEASON</div><h1>The off&#8209;season <em>counts</em> too.</h1><p class="sub">Run the drills on your own, log the scores, and track how they change.</p>','Self-reported scores.'),
+'story4_yournumbers':('blue',W,'<h1>Your sport. Your age. Your numbers.</h1><p class="sub">Log your self-reported scores.</p>','Self-reported scores.',1920),
+'story5_runitagain':('ink',R,'<h1>Run it again.<br><em>See what changed.</em></h1><p class="sub">Track your self-reported scores over time.</p>','Self-reported scores.',1920),
+'story6_coaches':('white',C,'<div class="tag">FOR COACHES</div><h1>Progress your athletes can see.</h1><p class="sub">They log their own scores and track them over time.</p>','Self-reported scores.',1920),
 }
 async def main():
   async with async_playwright() as p:
     br=await p.chromium.launch(); pg=await br.new_page(viewport={'width':1080,'height':1350})
+    import sys
     for n,v in P.items():
+      if len(sys.argv)>1 and not any(n.startswith(a) for a in sys.argv[1:]): continue
       t,l,m,f=v[:4]; h=v[4] if len(v)>4 else 1350
       await pg.set_viewport_size({'width':1080,'height':h})
       st='' if h==1350 else '<style>body{height:1920px;padding:260px 84px}.foot{bottom:300px}.dash{margin-top:180px}</style>'
